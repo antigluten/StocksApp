@@ -13,12 +13,24 @@ final class APICaller {
     private init() {}
     
     private struct Constants {
-        static let apiKey = ""
-        static let sandboxApiKey = ""
-        static let baseUrl = ""
+        static let apiKey = "c9htbeqad3idasnd9k2g"
+        static let sandboxApiKey = "sandbox_c9htbeqad3idasnd9k30"
+        static let baseUrl = "https://finnhub.io/api/v1/"
     }
     
     // MARK: PUBLIC
+    
+    func search(query: String, completion: @escaping (Result<SearchResponse, Error>) -> Void) {
+        guard let safeQuery = query.addingPercentEncoding(withAllowedCharacters: .urlQueryAllowed) else {
+            return
+        }
+        
+        guard let url = url(for: .search, queryParams: ["q":safeQuery]) else {
+            return
+        }
+        
+        request(url: url, expecting: SearchResponse.self, completion: completion)
+    }
     
     
     // MARK: PRIVATE
@@ -34,8 +46,26 @@ final class APICaller {
     
     
     private func url(for endpoint: Endpoints, queryParams: [String: String] = [:]) -> URL? {
+        var urlString = Constants.baseUrl + endpoint.rawValue
         
-        return nil
+        var queryItems = [URLQueryItem]()
+        // Add any parameters to URL
+        for (key, value) in queryParams {
+            queryItems.append(.init(name: key, value: value))
+        }
+        
+        // Add token
+        queryItems.append(.init(name: "token", value: Constants.apiKey))
+        
+        // Convert query iterms to suffix strings
+        
+        let queryString = queryItems.map { "\($0.name)=\($0.value ?? "")" }.joined(separator: "&")
+        
+        urlString += "?" + queryString
+        
+        print("\n\(urlString)\n")
+        
+        return URL(string: urlString)
     }
     
     public func request<T:Codable>(url: URL?, expecting: T.Type, completion: @escaping (Result<T, Error>) -> Void) {
