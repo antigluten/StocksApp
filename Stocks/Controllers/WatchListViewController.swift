@@ -54,11 +54,11 @@ class WatchListViewController: UIViewController {
     }
     
     private func setupFloatingPanel() {
-        let vc = TopStoriesViewControllers()
+        let vc = NewsViewController(type: .topStories)
         
-        let panel = FloatingPanelController()
-        panel.delegate = self
+        let panel = FloatingPanelController(delegate: self)
         panel.surfaceView.backgroundColor = .secondarySystemBackground
+        panel.set(contentViewController: vc)
         panel.addPanel(toParent: self)
         panel.track(scrollView: vc.tableView)
     }

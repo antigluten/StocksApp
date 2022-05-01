@@ -18,7 +18,7 @@ final class APICaller {
         static let baseUrl = "https://finnhub.io/api/v1/"
     }
     
-    // MARK: PUBLIC
+    // MARK: - PUBLIC
     
     func search(query: String, completion: @escaping (Result<SearchResponse, Error>) -> Void) {
         guard let safeQuery = query.addingPercentEncoding(withAllowedCharacters: .urlQueryAllowed) else {
@@ -33,7 +33,7 @@ final class APICaller {
     }
     
     
-    // MARK: PRIVATE
+    // MARK: - PRIVATE
     
     private enum Endpoints: String {
         case search
