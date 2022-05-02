@@ -1,4 +1,13 @@
-Pods/
-build/
+# temporary files
+.DS_Store
 *.swp
 *.swo
+*.lock
+profile
+
+#build files
+build/
+xcuserdata/
+
+#frameworks
+Pods/

@@ -14,7 +14,7 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
 
     func application(_ application: UIApplication, didFinishLaunchingWithOptions launchOptions: [UIApplication.LaunchOptionsKey: Any]?) -> Bool {
         
-        
+        debug()
         
         return true
     }
@@ -38,6 +38,14 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
 //                print(error.localizedDescription)
 //            }
 //        }
+        APICaller.shared.news(for: .company(symbol: "AAPL")) { result in
+            switch result {
+            case .success(let news):
+                print(news.count)
+            case .failure(let error):
+                print(error)
+            }
+        }
     }
 
 
