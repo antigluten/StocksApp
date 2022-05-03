@@ -5,6 +5,7 @@
 //  Created by Vladimir Gusev on 22.04.2022.
 //
 
+import SafariServices
 import UIKit
 
 class NewsViewController: UIViewController {
@@ -26,80 +27,7 @@ class NewsViewController: UIViewController {
     // MARK: - Properties
     
 //    private var stories = [NewsStory]()
-    private var stories: [NewsStory] = [
-        .init(category: "tech",
-              datetime: 100,
-              headline: "the world sucks because there are no chips available to buy here",
-              id: 1,
-              image: "https://s.yimg.com/uu/api/res/1.2/S8SCotpO9m2XQyQUIGU5dw--~B/aD02MzA7dz0xMjAwO2FwcGlkPXl0YWNoeW9u/https://media.zenfs.com/en/marketwatch.com/96d076434b2a015a3010bd2787b8c856",
-              related: "",
-              source: "mysite.com",
-              summary: "the world sucks because there are no chips available to buy here",
-              url: ""),
-        .init(category: "fuck-here",
-              datetime: 100,
-              headline: "the world sucks shall know pain",
-              id: 1,
-              image: "https://s.yimg.com/ny/api/res/1.2/uOuU.eGVGV._0O0x817tgw--/YXBwaWQ9aGlnaGxhbmRlcjt3PTEyMDA7aD02MDA-/https://s.yimg.com/uu/api/res/1.2/M4_qCwcZywsD5ZfkmRkaXw--~B/aD02NDA7dz0xMjgwO2FwcGlkPXl0YWNoeW9u/https://media.zenfs.com/en/Barrons.com/ffd44c282c3e899030610a0c6aee1cb7",
-              related: "",
-              source: "fuckyou.com",
-              summary: "",
-              url: ""),
-        .init(category: "tech",
-              datetime: 100,
-              headline: "the world sucks because there are no chips available to buy here",
-              id: 1,
-              image: "",
-              related: "",
-              source: "mysite.com",
-              summary: "the world sucks because there are no chips available to buy here",
-              url: ""),
-        .init(category: "fuck-here",
-              datetime: 100,
-              headline: "the world sucks shall know pain",
-              id: 1,
-              image: "",
-              related: "",
-              source: "fuckyou.com",
-              summary: "",
-              url: ""),
-        .init(category: "tech",
-              datetime: 100,
-              headline: "the world sucks because there are no chips available to buy here",
-              id: 1,
-              image: "",
-              related: "",
-              source: "mysite.com",
-              summary: "the world sucks because there are no chips available to buy here",
-              url: ""),
-        .init(category: "fuck-here",
-              datetime: 100,
-              headline: "the world sucks shall know pain",
-              id: 1,
-              image: "",
-              related: "",
-              source: "fuckyou.com",
-              summary: "",
-              url: ""),
-        .init(category: "tech",
-              datetime: 100,
-              headline: "the world sucks because there are no chips available to buy here",
-              id: 1,
-              image: "",
-              related: "",
-              source: "mysite.com",
-              summary: "the world sucks because there are no chips available to buy here",
-              url: ""),
-        .init(category: "fuck-here",
-              datetime: 100,
-              headline: "the world sucks shall know pain",
-              id: 1,
-              image: "",
-              related: "",
-              source: "fuckyou.com",
-              summary: "",
-              url: "")
-    ]
+    private var stories = [NewsStory]()
     
     private let type: Type
     
@@ -109,7 +37,8 @@ class NewsViewController: UIViewController {
         table.register(NewsStoryTableViewCell.self, forCellReuseIdentifier: NewsStoryTableViewCell.identifier)
         // Register a header
         table.register(NewsHeaderView.self, forHeaderFooterViewReuseIdentifier: NewsHeaderView.identifier)
-//        table.backgroundColor = .yellow
+        // Background Color
+//        table.backgroundColor = .secondarySystemBackground
         return table
     }()
     
@@ -154,11 +83,29 @@ class NewsViewController: UIViewController {
     }
     
     private func fetchNews() {
-        
+        APICaller.shared.news(for: type) { [weak self] result in
+            switch result {
+            case .success(let news):
+                DispatchQueue.main.async {
+                    self?.stories = news
+                    self?.tableView.reloadData()
+                }
+            case .failure(let error):
+                print(error)
+            }
+        }
     }
     
     private func open(url: URL) {
-        
+        let vc = SFSafariViewController(url: url)
+        present(vc, animated: true)
+    }
+    
+    private func presentFailedToOpenAlert() {
+        let alert = UIAlertController(title: "Unable to open", message: "We're unable to open the article", preferredStyle: .alert)
+        let alertAction = UIAlertAction(title: "Dismiss", style: .cancel, handler: nil)
+        alert.addAction(alertAction)
+        present(alert, animated: true)
     }
 }
 
@@ -182,6 +129,12 @@ extension NewsViewController: UITableViewDelegate, UITableViewDataSource {
     func tableView(_ tableView: UITableView, didSelectRowAt indexPath: IndexPath) {
         tableView.deselectRow(at: indexPath, animated: true)
         // Open news story
+        let story = stories[indexPath.row]
+        guard let url = URL(string: story.url) else {
+            presentFailedToOpenAlert()
+            return
+        }
+        open(url: url)
     }
     
     func tableView(_ tableView: UITableView, heightForHeaderInSection section: Int) -> CGFloat {

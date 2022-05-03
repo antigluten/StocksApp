@@ -38,10 +38,19 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
 //                print(error.localizedDescription)
 //            }
 //        }
-        APICaller.shared.news(for: .company(symbol: "AAPL")) { result in
+//        APICaller.shared.news(for: .company(symbol: "AAPL")) { result in
+//            switch result {
+//            case .success(let news):
+//                print(news.count)
+//            case .failure(let error):
+//                print(error)
+//            }
+//        }
+        APICaller.shared.marketData(for: "AAPL", numberOfDays: 1) { result in
             switch result {
-            case .success(let news):
-                print(news.count)
+            case .success(let response):
+                print(response.candleSticks.count)
+                let candleSticks = response.candleSticks
             case .failure(let error):
                 print(error)
             }

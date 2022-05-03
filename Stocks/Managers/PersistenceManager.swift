@@ -1,0 +1,67 @@
+//
+//  PersistanceManager.swift
+//  Stocks
+//
+//  Created by Vladimir Gusev on 22.04.2022.
+//
+
+import Foundation
+
+final class PersistenceManager {
+    static let shared = PersistenceManager()
+    
+    private let userDefaults: UserDefaults = .standard
+    
+    struct Constants {
+        static let onBoardedKey = "hasOnboarded"
+        static let watchListKey = "watchlist"
+    }
+    
+    private init() {}
+    
+    // MARK: - Public
+    
+    var watchList: [String] {
+        if !hasOnboarded {
+            userDefaults.set(true, forKey: Constants.onBoardedKey)
+            setupDefaults()
+        }
+        return userDefaults.stringArray(forKey: Constants.watchListKey) ?? []
+    }
+    
+    func addToWatchList() {
+        
+    }
+    
+    func removeFromWatchlist() {
+        
+    }
+    
+    // MARK: - Private
+    
+    private var hasOnboarded: Bool {
+        return userDefaults.bool(forKey: Constants.onBoardedKey)
+    }
+    
+    private func setupDefaults() {
+        let map: [String: String] = [
+            "AAPL": "Apple Inc.",
+            "MSFT": "Microsoft Corporation",
+            "SNAP": "Snap Inc.",
+            "GOOG": "Alphabet",
+            "AMZN": "Amazon.com Inc.",
+            "WORK": "Slack Technologies",
+            "FB": "Facebook Inc.",
+            "NVDA": "Nvidia Inc.",
+            "NKE": "Nike",
+            "PINS": "Pinterest Inc."
+        ]
+        
+        let symbols = map.keys.map { $0 }
+        userDefaults.set(symbols, forKey: Constants.watchListKey)
+        
+        for (symbol, name) in map {
+            userDefaults.set(name, forKey: symbol)
+        }
+    }
+}
