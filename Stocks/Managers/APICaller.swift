@@ -132,7 +132,7 @@ final class APICaller {
         
         urlString += "?" + queryString
         
-        print("\n\(urlString)\n")
+//        print("\n\(urlString)\n")
         
         return URL(string: urlString)
     }

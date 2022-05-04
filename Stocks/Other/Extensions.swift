@@ -107,7 +107,7 @@ extension UIImageView {
     }
 }
 
-// NumberFormatter
+// MARK: - NumberFormatter
 
 extension NumberFormatter {
     static let percentFormatter: NumberFormatter = {
@@ -125,4 +125,10 @@ extension NumberFormatter {
         formatter.maximumFractionDigits = 2
         return formatter
     }()
+}
+
+// MARK: - Notification
+
+extension Notification.Name {
+    static let didAddToWatchlist = Notification.Name("didAddToWatchlist")
 }
