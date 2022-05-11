@@ -149,8 +149,8 @@ class WatchListViewController: UIViewController {
                     changePercentage: .percentage(from: changePercentage),
                     chartViewModel: .init(
                         data: candleSticks.reversed().map { $0.close },
-                        showLegend: false,
-                        showAxis: false
+                        showLegend: true,
+                        showAxis: true
                     )
                 )
             )
@@ -238,7 +238,6 @@ extension WatchListViewController: SearchResultsViewControllerDelegate {
         )
         let navVC = UINavigationController(rootViewController: vc)
         vc.title = searchResult.description
-        vc.view.backgroundColor = .systemPink
         present(navVC, animated: true)
     }
 }
