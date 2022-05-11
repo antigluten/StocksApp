@@ -149,8 +149,9 @@ class WatchListViewController: UIViewController {
                     changePercentage: .percentage(from: changePercentage),
                     chartViewModel: .init(
                         data: candleSticks.reversed().map { $0.close },
-                        showLegend: true,
-                        showAxis: true
+                        showLegend: false,
+                        showAxis: false,
+                        fillColor: changePercentage < 0 ? .systemRed : .systemGreen
                     )
                 )
             )

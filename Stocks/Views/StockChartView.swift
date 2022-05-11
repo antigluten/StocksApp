@@ -14,6 +14,7 @@ class StockChartView: UIView {
         let data: [Double]
         let showLegend: Bool
         let showAxis: Bool
+        let fillColor: UIColor
     }
     
     private let chartView: LineChartView = {
@@ -61,9 +62,14 @@ class StockChartView: UIView {
             )
         }
         
+        chartView.rightAxis.enabled = viewModel.showAxis
+        chartView.legend.enabled = viewModel.showLegend
+        
         let dataSet = LineChartDataSet(entries: entries, label: "Test label")
         
-        dataSet.fillColor = .systemBlue
+        dataSet.fillColor = viewModel.fillColor
+        dataSet.highlightColor = UIColor.orange
+        dataSet.setColor(UIColor.systemBackground)
         dataSet.drawFilledEnabled = true
         dataSet.drawIconsEnabled = false
         dataSet.drawValuesEnabled = false

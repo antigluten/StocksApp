@@ -171,15 +171,37 @@ class StockDetailsViewController: UIViewController {
             viewModels.append(.init(name: "Beta", value: "\(metrics.beta)"))
             viewModels.append(.init(name: "10D Vol.", value: "\(metrics.tenDayAverageTradingVolume)"))
         }
-        
-        
+    
+        let change = getChangePercentage(symbol: symbol, data: candleSticks)
         
         headerView.configure(
-            chartViewModel: .init(data: candleSticks.reversed().map { $0.close }, showLegend: true, showAxis: true),
+            chartViewModel: .init(
+                data: candleSticks.reversed().map { $0.close },
+                showLegend: true,
+                showAxis: true,
+                fillColor: change > 0 ? .systemGreen : .systemRed
+            ),
             metricViewModel: viewModels
         )
         
         tableView.tableHeaderView = headerView
+    }
+    
+    private func getChangePercentage(symbol: String, data: [CandleStick]) -> Double {
+        if data.isEmpty {
+            return 0
+        }
+        let latestDate = data[0].date
+        
+        guard let latestClose = data.first?.close,
+                let priorClose = data.first(where: {
+                    !Calendar.current.isDate($0.date, inSameDayAs: latestDate)
+                })?.close else {
+            return 0
+        }
+        
+        let diff = 1 - (priorClose / latestClose)
+        return diff
     }
     
     private func open(url: URL) {
